@@ -1,2 +1,3 @@
-# bitburner
-BitBurner scripts collection.
+# BitBurner
+
+> BitBurner scripts collection.
