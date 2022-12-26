@@ -1,0 +1,20 @@
+{
+  "name": "bitburner",
+  "version": "1.0.0",
+  "description": "BitBurner scripts collection.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goliafrs/bitburner.git"
+  },
+  "keywords": [
+    "bitburner",
+    "scripts"
+  ],
+  "author": "goliafrs",
+  "license": "ISC",
+  "homepage": "https://github.com/goliafrs/bitburner#readme",
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.19.1",
+    "eslint": "^8.30.0"
+  }
+}
