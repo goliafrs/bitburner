@@ -2,30 +2,26 @@
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { args, fileExists, nuke, brutessh, ftpcrack, relaysmtp, httpworm, sqlinject, hasRootAccess } = ns
+  const { args, fileExists, nuke, hasRootAccess, getServerNumPortsRequired } = ns
   const [ target ] = args
-
-  if (fileExists('BruteSSH.exe', 'home')) {
-    brutessh(target)
+  const portsRequired = getServerNumPortsRequired(target)
+  const scripts = {
+    brutessh: 'BruteSSH.exe',
+    ftpcrack: 'FTPCrack.exe',
+    relaysmtp: 'relaySMTP.exe',
+    httpworm: 'HTTPWorm.exe',
+    sqlinject: 'SQLInject.exe'
   }
 
-  if (fileExists('FTPCrack.exe', 'home')) {
-    ftpcrack(target)
+  let ports = 0
+  for (const key in scripts) {
+    if (fileExists(scripts[key], 'home')) {
+      ports++
+      ns[key](target)
+    }
   }
 
-  if (fileExists('relaySMTP.exe', 'home')) {
-    relaysmtp(target)
-  }
-
-  if (fileExists('HTTPWorm.exe', 'home')) {
-    httpworm(target)
-  }
-
-  if (fileExists('SQLInject.exe', 'home')) {
-    sqlinject(target)
-  }
-
-  if (hasRootAccess(target) == false) {
+  if (!hasRootAccess(target) && ports >= portsRequired) {
     nuke(target)
   }
 }

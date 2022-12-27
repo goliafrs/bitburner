@@ -9,6 +9,7 @@ export async function main(ns) {
   const targets = []
   const scriptName = 'hack.js'
   const hacknetScripts = [ '/hacknet/purchaseNode.js', '/hacknet/upgradeNode.js' ]
+  const serversScripts = [ '/servers/purchaseServers.js', '/servers/runHackOnServers.js' ]
 
   const recursiveScan = target => {
     const servers = scan(target)
@@ -42,6 +43,13 @@ export async function main(ns) {
     const hackingLevel = getHackingLevel()
 
     for (const script of hacknetScripts) {
+      if (!scriptRunning(script, 'home')) {
+        print(`Running ${script} on home with 1 thread`)
+        run(script, 1, 'home')
+      }
+    }
+
+    for (const script of serversScripts) {
       if (!scriptRunning(script, 'home')) {
         print(`Running ${script} on home with 1 thread`)
         run(script, 1, 'home')

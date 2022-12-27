@@ -6,7 +6,7 @@ export async function main(ns) {
 
   disableLog('ALL')
 
-  const ram = 32
+  const ram = 512
   const serverPrefix = 'arzamas'
   const serverLimit = getPurchasedServerLimit()
   const serverCost = getPurchasedServerCost(ram)
@@ -18,7 +18,7 @@ export async function main(ns) {
     const money = () => getServerMoneyAvailable('home')
     if (money() < serverCost) {
       print(`Not enough money: ${money()}/${serverCost}`)
-      await sleep(1000)
+      await sleep(1 * 60 * 1000)
       continue
     }
 
