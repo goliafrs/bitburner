@@ -11,11 +11,11 @@ export async function main(ns) {
   const serverLimit = getPurchasedServerLimit()
   const serverCost = getPurchasedServerCost(ram)
 
+  const money = () => getServerMoneyAvailable('home').toFixed(2)
   const serverCount = () => getPurchasedServers().length
 
   while (serverCount() < serverLimit) {
     print(`Purchased servers: ${serverCount()}/${serverLimit}`)
-    const money = () => getServerMoneyAvailable('home')
     if (money() < serverCost) {
       print(`Not enough money: ${money()}/${serverCost}`)
       await sleep(1 * 60 * 1000)

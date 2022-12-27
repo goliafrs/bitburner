@@ -7,12 +7,12 @@ export async function main(ns) {
 
   disableLog('ALL')
 
-  const moneyThreshold = getServerMaxMoney(target) / 1.5
-  const securityThreshold = getServerMinSecurityLevel(target) + 0.5
+  const moneyThreshold = getServerMaxMoney(target)
+  const securityThreshold = getServerMinSecurityLevel(target)
 
   while (true) {
-    const money = getServerMoneyAvailable(target)
-    const security = getServerSecurityLevel(target)
+    const money = getServerMoneyAvailable(target).toFixed(2)
+    const security = getServerSecurityLevel(target).toFixed(2)
 
     if (security > securityThreshold) {
       print('Run weaken, security is to high: ' + security + ' > ' + securityThreshold + '')
