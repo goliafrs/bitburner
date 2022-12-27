@@ -2,22 +2,35 @@
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { args, fileExists, nuke, hasRootAccess, getServerNumPortsRequired } = ns
+  const { args, fileExists, nuke, brutessh, ftpcrack, relaysmtp, httpworm, sqlinject, hasRootAccess, getServerNumPortsRequired } = ns
   const [ target ] = args
   const portsRequired = getServerNumPortsRequired(target)
-  const scripts = {
-    brutessh: 'BruteSSH.exe',
-    ftpcrack: 'FTPCrack.exe',
-    relaysmtp: 'relaySMTP.exe',
-    httpworm: 'HTTPWorm.exe',
-    sqlinject: 'SQLInject.exe'
-  }
+  const scripts = [ 'BruteSSH.exe', 'FTPCrack.exe', 'relaySMTP.exe', 'HTTPWorm.exe', 'SQLInject.exe' ]
 
   let ports = 0
-  for (const key in scripts) {
-    if (fileExists(scripts[key], 'home')) {
+  for (const script of scripts) {
+    if (fileExists(script, 'home')) {
       ports++
-      ns[key](target)
+
+      // This switch because dynamic RAM usage calculated to be greater than initial RAM usage.
+      // This is probably because you somehow circumvented the static RAM calculation.
+      switch (script) {
+        case 'BruteSSH.exe':
+          brutessh(target)
+          break
+        case 'FTPCrack.exe':
+          ftpcrack(target)
+          break
+        case 'relaySMTP.exe':
+          relaysmtp(target)
+          break
+        case 'HTTPWorm.exe':
+          httpworm(target)
+          break
+        case 'SQLInject.exe':
+          sqlinject(target)
+          break
+      }
     }
   }
 

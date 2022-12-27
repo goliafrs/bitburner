@@ -4,7 +4,7 @@ const scriptName = 'hack.js'
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { killall, scp, exec, scan, scriptRunning, getPurchasedServers, getServerMaxRam, getServerUsedRam, getScriptRam, getServerMaxMoney, getServerRequiredHackingLevel } = ns
+  const { killall, scp, exec, scan, hasRootAccess, scriptRunning, getPurchasedServers, getServerMaxRam, getServerUsedRam, getScriptRam, getServerMaxMoney, getServerRequiredHackingLevel } = ns
 
   const foundTargets = []
 
@@ -48,7 +48,7 @@ export async function main(ns) {
 
     await scp(scriptName, server)
 
-    if (targets[index] && !scriptRunning(scriptName, targets[index])) {
+    if (targets[index] && !scriptRunning(scriptName, server) && hasRootAccess(targets[index])) {
       exec(scriptName, server, threads, targets[index], threads)
     }
   }
