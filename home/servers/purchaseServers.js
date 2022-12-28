@@ -25,7 +25,7 @@ export async function main(ns) {
   const serverPrefix = 'arzamas'
   const serverLimit = getPurchasedServerLimit()
   const servers = getPurchasedServers()
-  const ramLastServer = getServerMaxRam(servers[servers.length - 1])
+  const ramLastServer = serverCount() > 0 ? getServerMaxRam(servers[servers.length - 1]) : 0
   const maxRam = getPurchasedServerMaxRam()
 
   let ram = ramLastServer || 16

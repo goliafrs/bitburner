@@ -7,8 +7,8 @@ export async function main(ns) {
 
   disableLog('ALL')
 
-  const moneyThreshold = getServerMaxMoney(target)
-  const securityThreshold = getServerMinSecurityLevel(target)
+  const moneyThreshold = getServerMaxMoney(target) * 0.9
+  const securityThreshold = getServerMinSecurityLevel(target) * 1.1
 
   while (true) {
     const money = getServerMoneyAvailable(target).toFixed(2)
