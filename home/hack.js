@@ -7,10 +7,11 @@ export async function main(ns) {
 
   disableLog('ALL')
 
+  const infiniteLoop = true
   const moneyThreshold = getServerMaxMoney(target) * 0.9
   const securityThreshold = getServerMinSecurityLevel(target) * 1.1
 
-  while (true) {
+  while (infiniteLoop) {
     const money = getServerMoneyAvailable(target).toFixed(2)
     const security = getServerSecurityLevel(target).toFixed(2)
 
