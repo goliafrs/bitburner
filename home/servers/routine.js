@@ -8,16 +8,19 @@ export async function main(ns) {
 
   disableLog('ALL')
 
+  const servers = getPurchasedServers()
+  const excludeServers = [ 'home', ...servers ]
   const scannedTargets = []
   const recursiveScan = target => {
-    const servers = scan(target)
+    for (const server of scan(target)) {
+      if (excludeServers.includes(server)) {
+        continue
+      }
 
-    for (const server of servers) {
-      const maxMoney = getServerMaxMoney(server)
       const requiredHackingLevel = getServerRequiredHackingLevel(server)
-      const index = scannedTargets.findIndex(target => target.server === server)
+      const index = scannedTargets.findIndex(({ server }) => server === target)
 
-      if (!~index && maxMoney > 0) {
+      if (!~index) {
         scannedTargets.push({
           server,
           requiredHackingLevel
@@ -28,14 +31,15 @@ export async function main(ns) {
   }
   recursiveScan('home')
 
-  const targets = scannedTargets.sort((a, b) => a.requiredHackingLevel - b.requiredHackingLevel).map(target => target.server)
-  const servers = getPurchasedServers()
+  const filteredTargets = scannedTargets.filter(({ server }) => getServerMaxMoney(server) > 0)
+  const targets = filteredTargets.sort((a, b) => a.requiredHackingLevel - b.requiredHackingLevel).map(({ server }) => server)
 
   for (let index = 0; index < targets.length; index++) {
     const server = servers[index]
     const target = targets[index] || targets[targets.length - 1]
 
     if (!server) {
+      print('No more servers to hack')
       break
     }
 
@@ -63,4 +67,6 @@ export async function main(ns) {
       print(`Script ${scriptName} is already running on ${server}`)
     }
   }
+
+  print('Done')
 }
