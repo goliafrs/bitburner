@@ -12,7 +12,11 @@ export async function main(ns) {
   const excludeServers = [ 'home', ...servers ]
   const scannedTargets = []
   const recursiveScan = target => {
-    for (const server of scan(target)) {
+    const targets = scan(target)
+    print(`Found targets: ${targets}`)
+    for (const server of targets.filter(server => server !== target && !excludeServers.includes(server))) {
+      print(`Scanning ${server}`)
+
       if (excludeServers.includes(server)) {
         continue
       }
@@ -31,8 +35,15 @@ export async function main(ns) {
   }
   recursiveScan('home')
 
+  print(`Scanned targets: ${scannedTargets.map(({ server }) => server)}`)
+
   const filteredTargets = scannedTargets.filter(({ server }) => getServerMaxMoney(server) > 0)
+
+  print(`Filtered targets: ${filteredTargets.map(({ server }) => server)}`)
+
   const targets = filteredTargets.sort((a, b) => a.requiredHackingLevel - b.requiredHackingLevel).map(({ server }) => server)
+
+  print(`Targets: ${targets}`)
 
   for (let index = 0; index < targets.length; index++) {
     const server = servers[index]

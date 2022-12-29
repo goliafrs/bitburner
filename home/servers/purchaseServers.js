@@ -58,5 +58,9 @@ export async function main(ns) {
     }
   }
 
+  if (serverCount() === serverLimit) {
+    print(`Server limit reached: ${serverCount()}/${serverLimit}`)
+  }
+
   print('Done')
 }
