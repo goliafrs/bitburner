@@ -11,7 +11,7 @@ export async function main(ns) {
   const excludeServers = [ 'home', ...getPurchasedServers() ]
   const scriptHack = 'hack.js'
   const hacknetScripts = [ '/hacknet/purchaseNode.js', '/hacknet/upgradeNode.js' ]
-  const serversScripts = [ '/servers/purchaseServers.js', '/servers/routine.js' ]
+  const serversScripts = [ '/servers/purchaseServers.js', '/servers/upgradeServers.js', '/servers/routine.js' ]
 
   const recursiveScan = target => {
     for (const server of scan(target)) {
