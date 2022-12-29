@@ -24,37 +24,20 @@ export async function main(ns) {
   const serverLimit = getPurchasedServerLimit()
   const servers = getPurchasedServers()
   const ramLastServer = serverCount() > 0 ? getServerMaxRam(servers[servers.length - 1]) : 0
-  const maxRam = getPurchasedServerMaxRam()
-
-  let ram = ramLastServer || 16
-  let flag = true
-  while (flag) {
-    if (money() < getPurchasedServerCost(ram)) {
-      flag = false
-      break
-    }
-    if (ram < maxRam) {
-      ram = ram * 2
-    } else {
-      flag = false
-      break
-    }
-  }
-
-  print(`Current RAM limit is ${ramLastServer}GB`)
-  print(`New RAM limit is ${ram}GB`)
+  const ram = ramLastServer || 16
 
   while (serverCount() < serverLimit) {
     print(`Purchased servers: ${serverCount()}/${serverLimit}`)
     const serverCost = getPurchasedServerCost(ram)
     if (money() < serverCost) {
       print(`Not enough money: ${money()}/${serverCost}`)
-      await sleep(1000)
+      await sleep(1 * 60 * 1000)
       continue
     }
 
     for (let index = serverCount(); index < serverLimit; ++index) {
-      purchaseServer(serverPrefix, ram)
+      const server = purchaseServer(serverPrefix, ram)
+      print(`Purchased server ${server} with ${ram}GB RAM`)
     }
   }
 
