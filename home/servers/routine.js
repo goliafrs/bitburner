@@ -4,7 +4,22 @@ const scriptName = 'hack.js'
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { killall, scp, exec, scan, print, disableLog, hasRootAccess, scriptRunning, getPurchasedServers, getServerMaxRam, getServerUsedRam, getScriptRam, getServerMaxMoney, getServerRequiredHackingLevel } = ns
+  const {
+    scp,
+    exec,
+    scan,
+    print,
+    killall,
+    disableLog,
+    hasRootAccess,
+    scriptRunning,
+    getScriptRam,
+    getServerMaxRam,
+    getServerUsedRam,
+    getServerMaxMoney,
+    getServerRequiredHackingLevel,
+    getPurchasedServers
+  } = ns
 
   disableLog('ALL')
 
@@ -12,17 +27,17 @@ export async function main(ns) {
   const excludeServers = [ 'home', ...servers ]
   const scannedTargets = []
   const recursiveScan = target => {
+    print(`Scanning ${target}`)
     const targets = scan(target)
     print(`Found targets: ${targets}`)
-    for (const server of targets.filter(server => server !== target && !excludeServers.includes(server))) {
-      print(`Scanning ${server}`)
-
+    for (const server of targets.filter(server => server !== target)) {
       if (excludeServers.includes(server)) {
         continue
       }
 
       const requiredHackingLevel = getServerRequiredHackingLevel(server)
-      const index = scannedTargets.findIndex(({ server }) => server === target)
+      const index = scannedTargets.findIndex(scannedTarget => scannedTarget.server === server)
+      print(`Index: ${index} for ${server} (required hacking level: ${requiredHackingLevel})`)
 
       if (!~index) {
         scannedTargets.push({
@@ -34,6 +49,9 @@ export async function main(ns) {
     }
   }
   recursiveScan('home')
+  for (const target of scannedTargets) {
+    recursiveScan(target.server)
+  }
 
   print(`Scanned targets: ${scannedTargets.map(({ server }) => server)}`)
 

@@ -45,15 +45,21 @@ export async function main(ns) {
       }
     }
 
+    print(`Current money is ${money()}$`)
+    print(`Current server count is ${serverCount()}`)
+    print(`Current server limit is ${serverLimit}`)
+    print(`Current max RAM is ${maxRam}GB`)
     print(`Current RAM limit is ${ramLastServer}GB`)
     print(`New RAM limit is ${ram}GB`)
 
-    if (ramLastServer && ramLastServer < ram) {
+    if (ramLastServer < ram) {
       print(`Destroying all servers with RAM less than ${ram}GB`)
 
       for (const server of servers) {
         const serverRam = getServerMaxRam(server)
+        print(`Server ${server} has ${serverRam}GB RAM`)
         if (serverRam < ram) {
+          print(`Destroying server ${server}`)
           killall(server)
           deleteServer(server)
           break
