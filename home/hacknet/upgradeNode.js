@@ -3,6 +3,9 @@ const maxRam = 64
 const maxCores = 16
 const timeout = 10
 
+/**
+* @param {NS} ns
+**/
 export async function main(ns) {
   const { hacknet, disableLog, sleep, print } = ns
   const { numNodes, getNodeStats, upgradeLevel, upgradeRam, upgradeCore } = hacknet

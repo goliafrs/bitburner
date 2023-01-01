@@ -18,7 +18,8 @@ export async function main(ns) {
     getServerUsedRam,
     getServerMaxMoney,
     getServerRequiredHackingLevel,
-    getPurchasedServers
+    getPurchasedServers,
+    getHackingLevel
   } = ns
 
   disableLog('ALL')
@@ -37,8 +38,6 @@ export async function main(ns) {
 
       const requiredHackingLevel = getServerRequiredHackingLevel(server)
       const index = scannedTargets.findIndex(scannedTarget => scannedTarget.server === server)
-      print(`Index: ${index} for ${server} (required hacking level: ${requiredHackingLevel})`)
-
       if (!~index) {
         scannedTargets.push({
           server,
@@ -49,28 +48,32 @@ export async function main(ns) {
     }
   }
   recursiveScan('home')
-  for (const target of scannedTargets) {
-    recursiveScan(target.server)
-  }
 
   print(`Scanned targets: ${scannedTargets.map(({ server }) => server)}`)
 
-  const filteredTargets = scannedTargets.filter(({ server }) => getServerMaxMoney(server) > 0)
-
+  const filteredTargets = scannedTargets.filter(({ server }) => getServerMaxMoney(server) > 0 && getServerRequiredHackingLevel(server) <= getHackingLevel())
   print(`Filtered targets: ${filteredTargets.map(({ server }) => server)}`)
 
   const targets = filteredTargets.sort((a, b) => a.requiredHackingLevel - b.requiredHackingLevel).map(({ server }) => server)
-
   print(`Targets: ${targets}`)
 
-  for (let index = 0; index < targets.length; index++) {
-    const server = servers[index]
-    const target = targets[index] || targets[targets.length - 1]
-
-    if (!server) {
-      print('No more servers to hack')
-      break
+  const getMostExpensiveTarget = () => {
+    let mostExpensiveTarget = null
+    let mostExpensiveTargetMoney = 0
+    for (const target of targets) {
+      const targetMoney = getServerMaxMoney(target)
+      if (targetMoney > mostExpensiveTargetMoney && hasRootAccess(target)) {
+        mostExpensiveTarget = target
+        mostExpensiveTargetMoney = targetMoney
+      }
     }
+
+    return mostExpensiveTarget
+  }
+
+  for (const server of servers) {
+    const target = getMostExpensiveTarget()
+    print(`Target: ${target}`)
 
     if (!scriptRunning(scriptName, server)) {
       killall(server)
@@ -88,10 +91,8 @@ export async function main(ns) {
       print(`Copying ${scriptName} to ${server}`)
       await scp(scriptName, server)
 
-      if (target && hasRootAccess(target)) {
-        print(`Running ${scriptName} on ${server} (RAM: ${serverRam}) with ${threads} threads`)
-        exec(scriptName, server, threads, target, threads)
-      }
+      print(`Running ${scriptName} on ${server} (RAM: ${serverRam}) with ${threads} threads`)
+      exec(scriptName, server, threads, target, threads)
     } else {
       print(`Script ${scriptName} is already running on ${server}`)
     }

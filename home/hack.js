@@ -16,10 +16,10 @@ export async function main(ns) {
     const security = getServerSecurityLevel(target).toFixed(2)
 
     if (security > securityThreshold) {
-      print('Run weaken, security is to high: ' + security + ' > ' + securityThreshold + '')
+      print('Run weaken, security is to high: ' + security + ' > ' + securityThreshold.toFixed(2) + '')
       await weaken(target, { threads })
     } else if (money < moneyThreshold) {
-      print('Run grow, money is to low: ' + money + ' < ' + moneyThreshold + '')
+      print('Run grow, money is to low: ' + money + ' < ' + moneyThreshold.toFixed(2) + '')
       await grow(target, { threads })
     } else {
       print(`Hacking ${target}`)
