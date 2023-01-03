@@ -2,18 +2,11 @@
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const {
-    print,
-    killall,
-    disableLog,
-    getPurchasedServers
-  } = ns
+  ns.disableLog('ALL')
 
-  disableLog('ALL')
-
-  for (const server of getPurchasedServers()) {
+  for (const server of ns.getPurchasedServers()) {
     print(`Killing all scripts on ${server}`)
-    killall(server)
+    ns.killall(server)
   }
 
   print('Done')

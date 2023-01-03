@@ -4,39 +4,21 @@ const scriptName = 'hack.js'
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const {
-    scp,
-    exec,
-    scan,
-    print,
-    killall,
-    disableLog,
-    hasRootAccess,
-    scriptRunning,
-    getScriptRam,
-    getServerMaxRam,
-    getServerUsedRam,
-    getServerMaxMoney,
-    getServerRequiredHackingLevel,
-    getPurchasedServers,
-    getHackingLevel
-  } = ns
+  ns.disableLog('ALL')
 
-  disableLog('ALL')
-
-  const servers = getPurchasedServers()
+  const servers = ns.getPurchasedServers()
   const excludeServers = [ 'home', ...servers ]
   const scannedTargets = []
   const recursiveScan = target => {
     print(`Scanning ${target}`)
-    const targets = scan(target)
+    const targets = ns.scan(target)
     print(`Found targets: ${targets}`)
     for (const server of targets.filter(server => server !== target)) {
       if (excludeServers.includes(server)) {
         continue
       }
 
-      const requiredHackingLevel = getServerRequiredHackingLevel(server)
+      const requiredHackingLevel = ns.getServerRequiredHackingLevel(server)
       const index = scannedTargets.findIndex(scannedTarget => scannedTarget.server === server)
       if (!~index) {
         scannedTargets.push({
@@ -51,7 +33,7 @@ export async function main(ns) {
 
   print(`Scanned targets: ${scannedTargets.map(({ server }) => server)}`)
 
-  const filteredTargets = scannedTargets.filter(({ server }) => getServerMaxMoney(server) > 0 && getServerRequiredHackingLevel(server) <= getHackingLevel())
+  const filteredTargets = scannedTargets.filter(({ server }) => ns.getServerMaxMoney(server) > 0 && ns.getServerRequiredHackingLevel(server) <= ns.getHackingLevel())
   print(`Filtered targets: ${filteredTargets.map(({ server }) => server)}`)
 
   const targets = filteredTargets.sort((a, b) => a.requiredHackingLevel - b.requiredHackingLevel).map(({ server }) => server)
@@ -61,8 +43,8 @@ export async function main(ns) {
     let mostExpensiveTarget = null
     let mostExpensiveTargetMoney = 0
     for (const target of targets) {
-      const targetMoney = getServerMaxMoney(target)
-      if (targetMoney > mostExpensiveTargetMoney && hasRootAccess(target)) {
+      const targetMoney = ns.getServerMaxMoney(target)
+      if (targetMoney > mostExpensiveTargetMoney && ns.hasRootAccess(target)) {
         mostExpensiveTarget = target
         mostExpensiveTargetMoney = targetMoney
       }
@@ -75,13 +57,13 @@ export async function main(ns) {
     const target = getMostExpensiveTarget()
     print(`Target: ${target}`)
 
-    if (!scriptRunning(scriptName, server)) {
-      killall(server)
+    if (!ns.scriptRunning(scriptName, server)) {
+      ns.killall(server)
 
-      const serverMaxRam = getServerMaxRam(server)
-      const serverUsedRam = getServerUsedRam(server)
+      const serverMaxRam = ns.getServerMaxRam(server)
+      const serverUsedRam = ns.getServerUsedRam(server)
       const serverRam = serverMaxRam - serverUsedRam
-      const scriptRam = getScriptRam(scriptName)
+      const scriptRam = ns.getScriptRam(scriptName)
 
       let threads = Math.floor(serverRam / scriptRam)
       if (threads < 1) {
@@ -89,10 +71,10 @@ export async function main(ns) {
       }
 
       print(`Copying ${scriptName} to ${server}`)
-      await scp(scriptName, server)
+      await ns.scp(scriptName, server)
 
       print(`Running ${scriptName} on ${server} (RAM: ${serverRam}) with ${threads} threads`)
-      exec(scriptName, server, threads, target, threads)
+      ns.exec(scriptName, server, threads, target, threads)
     } else {
       print(`Script ${scriptName} is already running on ${server}`)
     }

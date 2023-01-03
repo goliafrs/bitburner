@@ -7,38 +7,35 @@ const timeout = 10
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { hacknet, disableLog, sleep, print } = ns
-  const { numNodes, getNodeStats, upgradeLevel, upgradeRam, upgradeCore } = hacknet
+  ns.disableLog('ALL')
 
-  disableLog('ALL')
-
-  for (let index = 0; index < numNodes(); index++) {
-    const level = () => getNodeStats(index).level
+  for (let index = 0; index < ns.hacknet.numNodes(); index++) {
+    const level = () => ns.hacknet.getNodeStats(index).level
 
     while (level() < maxLevel) {
-      upgradeLevel(index)
+      ns.hacknet.upgradeLevel(index)
       print(`Upgrading level of node ${index} to ${level()}`)
-      await sleep(timeout)
+      await ns.sleep(timeout)
     }
   }
 
-  for (let index = 0; index < numNodes(); index++) {
-    const ram = () => getNodeStats(index).ram
+  for (let index = 0; index < ns.hacknet.numNodes(); index++) {
+    const ram = () => ns.hacknet.getNodeStats(index).ram
 
     while (ram() < maxRam) {
-      upgradeRam(index)
+      ns.hacknet.upgradeRam(index)
       print(`Upgrading ram of node ${index} to ${ram()}`)
-      await sleep(timeout)
+      await ns.sleep(timeout)
     }
   }
 
-  for (let index = 0; index < numNodes(); index++) {
-    const cores = () => getNodeStats(index).cores
+  for (let index = 0; index < ns.hacknet.numNodes(); index++) {
+    const cores = () => ns.hacknet.getNodeStats(index).cores
 
     while (cores() < maxCores) {
-      upgradeCore(index)
+      ns.hacknet.upgradeCore(index)
       print(`Upgrading cores of node ${index} to ${cores()}`)
-      await sleep(timeout)
+      await ns.sleep(timeout)
     }
   }
 

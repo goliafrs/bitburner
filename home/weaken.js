@@ -2,10 +2,10 @@
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { args, weaken } = ns
-  const [ server, threads ] = args
+  const [ server, threads ] = ns.args
 
-  while (true) {
-    await weaken(server, { threads })
+  const infiniteLoop = true
+  while (infiniteLoop) {
+    await ns.weaken(server, { threads })
   }
 }

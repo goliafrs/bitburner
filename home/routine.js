@@ -2,19 +2,17 @@
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { run, exec, scan, sleep, print, scp, killall, disableLog, scriptRunning, hasRootAccess, getHackingLevel, getServerRequiredHackingLevel, getServerMaxRam, getServerUsedRam, getScriptRam, getPurchasedServers, getServerMaxMoney } = ns
-
-  disableLog('ALL')
+  ns.disableLog('ALL')
 
   const targets = []
   const infiniteLoop = true
-  const excludeServers = [ 'home', ...getPurchasedServers() ]
+  const excludeServers = [ 'home', ...ns.getPurchasedServers() ]
   const scriptHack = 'hack.js'
   const hacknetScripts = [ '/hacknet/purchaseNode.js', '/hacknet/upgradeNode.js' ]
   const serversScripts = [ '/servers/purchaseServers.js', '/servers/upgradeServers.js', '/servers/routine.js' ]
 
   const recursiveScan = target => {
-    for (const server of scan(target)) {
+    for (const server of ns.scan(target)) {
       if (!targets.includes(server) && !excludeServers.includes(server)) {
         targets.push(server)
         recursiveScan(server)
@@ -22,10 +20,10 @@ export async function main(ns) {
     }
   }
   const getThreads = target => {
-    const serverMaxRam = getServerMaxRam(target)
-    const serverUsedRam = getServerUsedRam(target)
+    const serverMaxRam = ns.getServerMaxRam(target)
+    const serverUsedRam = ns.getServerUsedRam(target)
     const serverRam = serverMaxRam - serverUsedRam
-    const scriptRam = getScriptRam(scriptHack)
+    const scriptRam = ns.getScriptRam(scriptHack)
 
     let threads = Math.floor(serverRam / scriptRam)
     if (threads < 1) {
@@ -45,41 +43,41 @@ export async function main(ns) {
   }
 
   while (infiniteLoop) {
-    const hackingLevel = getHackingLevel()
+    const hackingLevel = ns.getHackingLevel()
     print(`${timestamp()} Hacking level: ${hackingLevel}`)
 
     for (const script of hacknetScripts) {
-      if (!scriptRunning(script, 'home')) {
+      if (!ns.scriptRunning(script, 'home')) {
         print(`${timestamp()} Running ${script} on home with 1 thread`)
-        run(script, 1)
+        ns.run(script, 1)
       }
     }
 
     for (const script of serversScripts) {
-      if (!scriptRunning(script, 'home')) {
+      if (!ns.scriptRunning(script, 'home')) {
         print(`${timestamp()} Running ${script} on home with 1 thread`)
-        run(script, 1)
+        ns.run(script, 1)
       }
     }
 
-    for (const target of targets.filter(server => getServerRequiredHackingLevel(server) <= hackingLevel)) {
-      if (!hasRootAccess(target)) {
+    for (const target of targets.filter(server => ns.getServerRequiredHackingLevel(server) <= hackingLevel)) {
+      if (!ns.hasRootAccess(target)) {
         print(`${timestamp()} Running nuke.js on ${target} with 1 thread`)
-        run('nuke.js', 1, target)
+        ns.run('nuke.js', 1, target)
       }
 
-      if (getServerMaxMoney(target) > 0) {
-        if (!scriptRunning(scriptHack, target)) {
+      if (ns.getServerMaxMoney(target) > 0) {
+        if (!ns.scriptRunning(scriptHack, target)) {
           const threads = getThreads(target)
           print(`${timestamp()} Running ${scriptHack} on ${target} with ${threads} threads`)
-          await scp(scriptHack, target)
-          exec(scriptHack, target, threads, target, threads)
+          await ns.scp(scriptHack, target)
+          ns.exec(scriptHack, target, threads, target, threads)
         }
       } else {
-        killall(target)
+        ns.killall(target)
       }
     }
 
-    await sleep(1 * 60 * 1000)
+    await ns.sleep(1 * 60 * 1000)
   }
 }

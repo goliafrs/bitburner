@@ -2,14 +2,11 @@
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { hacknet, sleep, print, disableLog, getServerMoneyAvailable } = ns
-  const { numNodes, getPurchaseNodeCost, purchaseNode } = hacknet
+  ns.disableLog('ALL')
 
-  disableLog('ALL')
-
-  const money = () => getServerMoneyAvailable('home')
-  const nodesCount = () => numNodes()
-  const cost = () => getPurchaseNodeCost()
+  const money = () => ns.getServerMoneyAvailable('home')
+  const nodesCount = () => ns.hacknet.numNodes()
+  const cost = () => ns.hacknet.getPurchaseNodeCost()
 
   const infiniteLoop = true
 
@@ -17,11 +14,11 @@ export async function main(ns) {
     print(`Nodes: ${nodesCount()} Money: ${money().toFixed(2)} Cost: ${cost().toFixed(2)}`)
     while (money() < cost()) {
       print(`Waiting for money: ${money().toFixed(2)} < ${cost().toFixed(2)}`)
-      await sleep(1 * 60 * 1000)
+      await ns.sleep(1 * 60 * 1000)
     }
 
     print('Purchasing node')
-    purchaseNode()
+    ns.hacknet.purchaseNode()
   }
 
   print('Done')

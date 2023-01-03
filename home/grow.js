@@ -2,10 +2,10 @@
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { args, grow } = ns
-  const [ target, threads ] = args
+  const [ target, threads ] = ns.args
 
-  while (true) {
-    await grow(target, { threads })
+  const infiniteLoop = true
+  while (infiniteLoop) {
+    await ns.grow(target, { threads })
   }
 }

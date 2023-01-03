@@ -2,8 +2,7 @@
 * @param {NS} ns
 **/
 export async function main(ns) {
-  const { args, killall } = ns
-  const [ server ] = args
+  const [ server ] = ns.args
 
-  killall(server)
+  ns.killall(server)
 }
