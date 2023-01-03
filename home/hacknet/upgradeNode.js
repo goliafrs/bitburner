@@ -14,7 +14,7 @@ export async function main(ns) {
 
     while (level() < maxLevel) {
       ns.hacknet.upgradeLevel(index)
-      print(`Upgrading level of node ${index} to ${level()}`)
+      ns.print(`Upgrading level of node ${index} to ${level()}`)
       await ns.sleep(timeout)
     }
   }
@@ -24,7 +24,7 @@ export async function main(ns) {
 
     while (ram() < maxRam) {
       ns.hacknet.upgradeRam(index)
-      print(`Upgrading ram of node ${index} to ${ram()}`)
+      ns.print(`Upgrading ram of node ${index} to ${ram()}`)
       await ns.sleep(timeout)
     }
   }
@@ -34,10 +34,10 @@ export async function main(ns) {
 
     while (cores() < maxCores) {
       ns.hacknet.upgradeCore(index)
-      print(`Upgrading cores of node ${index} to ${cores()}`)
+      ns.print(`Upgrading cores of node ${index} to ${cores()}`)
       await ns.sleep(timeout)
     }
   }
 
-  print('Done')
+  ns.print('Done')
 }

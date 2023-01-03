@@ -11,15 +11,15 @@ export async function main(ns) {
   const infiniteLoop = true
 
   while (infiniteLoop) {
-    print(`Nodes: ${nodesCount()} Money: ${money().toFixed(2)} Cost: ${cost().toFixed(2)}`)
+    ns.print(`Nodes: ${nodesCount()} Money: ${money().toFixed(2)} Cost: ${cost().toFixed(2)}`)
     while (money() < cost()) {
-      print(`Waiting for money: ${money().toFixed(2)} < ${cost().toFixed(2)}`)
+      ns.print(`Waiting for money: ${money().toFixed(2)} < ${cost().toFixed(2)}`)
       await ns.sleep(1 * 60 * 1000)
     }
 
-    print('Purchasing node')
+    ns.print('Purchasing node')
     ns.hacknet.purchaseNode()
   }
 
-  print('Done')
+  ns.print('Done')
 }

@@ -15,13 +15,13 @@ export async function main(ns) {
     const security = ns.getServerSecurityLevel(target).toFixed(2)
 
     if (security > securityThreshold) {
-      print('Run weaken, security is to high: ' + security + ' > ' + securityThreshold.toFixed(2) + '')
+      ns.print('Run weaken, security is to high: ' + security + ' > ' + securityThreshold.toFixed(2) + '')
       await ns.weaken(target, { threads })
     } else if (money < moneyThreshold) {
-      print('Run grow, money is to low: ' + money + ' < ' + moneyThreshold.toFixed(2) + '')
+      ns.print('Run grow, money is to low: ' + money + ' < ' + moneyThreshold.toFixed(2) + '')
       await ns.grow(target, { threads })
     } else {
-      print(`Hacking ${target}`)
+      ns.print(`Hacking ${target}`)
       await ns.hack(target, { threads })
     }
   }

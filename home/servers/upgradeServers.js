@@ -30,15 +30,15 @@ export async function main(ns) {
       }
     }
 
-    print(`Current max RAM is    ${maxRam}GB`)
-    print(`Current RAM limit is  ${ramLastServer}GB`)
-    print(`New RAM limit is      ${ram}GB`)
+    ns.print(`Current max RAM is    ${maxRam}GB`)
+    ns.print(`Current RAM limit is  ${ramLastServer}GB`)
+    ns.print(`New RAM limit is      ${ram}GB`)
 
     for (const server of servers) {
       const serverRam = ns.getServerMaxRam(server)
-      print(`Server ${server} has ${serverRam}GB RAM`)
+      ns.print(`Server ${server} has ${serverRam}GB RAM`)
       if (serverRam < ram) {
-        print(`Destroying server ${server}`)
+        ns.print(`Destroying server ${server}`)
         ns.killall(server)
         ns.deleteServer(server)
         break
@@ -47,7 +47,7 @@ export async function main(ns) {
 
     for (let index = 0; index < serverLimit - serverCount(); ++index) {
       const server = ns.purchaseServer(serverPrefix, ram)
-      print(`Purchasing server ${server} with RAM ${ram}`)
+      ns.print(`Purchasing server ${server} with RAM ${ram}`)
     }
 
     await ns.sleep(5 * 60 * 1000)

@@ -10,9 +10,9 @@ export async function main(ns) {
   const excludeServers = [ 'home', ...servers ]
   const scannedTargets = []
   const recursiveScan = target => {
-    print(`Scanning ${target}`)
+    ns.print(`Scanning ${target}`)
     const targets = ns.scan(target)
-    print(`Found targets: ${targets}`)
+    ns.print(`Found targets: ${targets}`)
     for (const server of targets.filter(server => server !== target)) {
       if (excludeServers.includes(server)) {
         continue
@@ -31,13 +31,13 @@ export async function main(ns) {
   }
   recursiveScan('home')
 
-  print(`Scanned targets: ${scannedTargets.map(({ server }) => server)}`)
+  ns.print(`Scanned targets: ${scannedTargets.map(({ server }) => server)}`)
 
   const filteredTargets = scannedTargets.filter(({ server }) => ns.getServerMaxMoney(server) > 0 && ns.getServerRequiredHackingLevel(server) <= ns.getHackingLevel())
-  print(`Filtered targets: ${filteredTargets.map(({ server }) => server)}`)
+  ns.print(`Filtered targets: ${filteredTargets.map(({ server }) => server)}`)
 
   const targets = filteredTargets.sort((a, b) => a.requiredHackingLevel - b.requiredHackingLevel).map(({ server }) => server)
-  print(`Targets: ${targets}`)
+  ns.print(`Targets: ${targets}`)
 
   const getMostExpensiveTarget = () => {
     let mostExpensiveTarget = null
@@ -55,7 +55,7 @@ export async function main(ns) {
 
   for (const server of servers) {
     const target = getMostExpensiveTarget()
-    print(`Target: ${target}`)
+    ns.print(`Target: ${target}`)
 
     if (!ns.scriptRunning(scriptName, server)) {
       ns.killall(server)
@@ -70,15 +70,15 @@ export async function main(ns) {
         threads = 1
       }
 
-      print(`Copying ${scriptName} to ${server}`)
+      ns.print(`Copying ${scriptName} to ${server}`)
       await ns.scp(scriptName, server)
 
-      print(`Running ${scriptName} on ${server} (RAM: ${serverRam}) with ${threads} threads`)
+      ns.print(`Running ${scriptName} on ${server} (RAM: ${serverRam}) with ${threads} threads`)
       ns.exec(scriptName, server, threads, target, threads)
     } else {
-      print(`Script ${scriptName} is already running on ${server}`)
+      ns.print(`Script ${scriptName} is already running on ${server}`)
     }
   }
 
-  print('Done')
+  ns.print('Done')
 }

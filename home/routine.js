@@ -44,32 +44,32 @@ export async function main(ns) {
 
   while (infiniteLoop) {
     const hackingLevel = ns.getHackingLevel()
-    print(`${timestamp()} Hacking level: ${hackingLevel}`)
+    ns.print(`${timestamp()} Hacking level: ${hackingLevel}`)
 
     for (const script of hacknetScripts) {
       if (!ns.scriptRunning(script, 'home')) {
-        print(`${timestamp()} Running ${script} on home with 1 thread`)
+        ns.print(`${timestamp()} Running ${script} on home with 1 thread`)
         ns.run(script, 1)
       }
     }
 
     for (const script of serversScripts) {
       if (!ns.scriptRunning(script, 'home')) {
-        print(`${timestamp()} Running ${script} on home with 1 thread`)
+        ns.print(`${timestamp()} Running ${script} on home with 1 thread`)
         ns.run(script, 1)
       }
     }
 
     for (const target of targets.filter(server => ns.getServerRequiredHackingLevel(server) <= hackingLevel)) {
       if (!ns.hasRootAccess(target)) {
-        print(`${timestamp()} Running nuke.js on ${target} with 1 thread`)
+        ns.print(`${timestamp()} Running nuke.js on ${target} with 1 thread`)
         ns.run('nuke.js', 1, target)
       }
 
       if (ns.getServerMaxMoney(target) > 0) {
         if (!ns.scriptRunning(scriptHack, target)) {
           const threads = getThreads(target)
-          print(`${timestamp()} Running ${scriptHack} on ${target} with ${threads} threads`)
+          ns.print(`${timestamp()} Running ${scriptHack} on ${target} with ${threads} threads`)
           await ns.scp(scriptHack, target)
           ns.exec(scriptHack, target, threads, target, threads)
         }

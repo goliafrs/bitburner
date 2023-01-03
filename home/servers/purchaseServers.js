@@ -14,23 +14,23 @@ export async function main(ns) {
   const ram = ramLastServer || 16
 
   while (serverCount() < serverLimit) {
-    print(`Purchased servers: ${serverCount()}/${serverLimit}`)
+    ns.print(`Purchased servers: ${serverCount()}/${serverLimit}`)
     const serverCost = ns.getPurchasedServerCost(ram)
     if (money() < serverCost) {
-      print(`Not enough money: ${money()}/${serverCost}`)
+      ns.print(`Not enough money: ${money()}/${serverCost}`)
       await ns.sleep(1 * 60 * 1000)
       continue
     }
 
     for (let index = serverCount(); index < serverLimit; ++index) {
       const server = ns.purchaseServer(serverPrefix, ram)
-      print(`Purchased server ${server} with ${ram}GB RAM`)
+      ns.print(`Purchased server ${server} with ${ram}GB RAM`)
     }
   }
 
   if (serverCount() === serverLimit) {
-    print(`Server limit reached: ${serverCount()}/${serverLimit}`)
+    ns.print(`Server limit reached: ${serverCount()}/${serverLimit}`)
   }
 
-  print('Done')
+  ns.print('Done')
 }
